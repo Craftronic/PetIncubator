@@ -1,1 +1,11 @@
+# Ignore Python virtual environments
 /venv
+
+# Ignore Visual Studio Code settings
+.vscode
+
+# Ignore .esphome directory in any subfolder
+**/.esphome/
+
+# Ignore secrets.yaml file in any subfolder
+**/secrets.yaml

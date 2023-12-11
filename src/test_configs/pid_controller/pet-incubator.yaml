@@ -1,0 +1,102 @@
+substitutions:
+  GPIO_ptc_heating_element: GPIO26
+  ptc_max_intensity: '0.21'
+
+esphome:
+  name: pet-incubator
+  platform: ESP32
+  board: esp32dev
+
+wifi:
+  ssid: ""
+  password: ""
+
+web_server:
+  port: 80
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: true
+
+sensor:
+  # Temperature and humidity sensors
+  - platform: scd4x
+    temperature:
+      id: temperature
+      name: "Temperature"
+    humidity:
+      id: humidity
+      name: "Humidity"
+    update_interval: 10s
+
+  # Expose PID variables for debugging
+  - platform: pid
+    name: "PID RESULT"
+    type: RESULT
+  - platform: pid
+    name: "PID ERROR"
+    type: ERROR
+  - platform: pid
+    name: "PID PROPORTIONAL"
+    type: PROPORTIONAL
+  - platform: pid
+    name: "PID INTEGRAL"
+    type: INTEGRAL
+  - platform: pid
+    name: "PID DERIVATIVE"
+    type: DERIVATIVE
+  - platform: pid
+    name: "PID HEAT"
+    type: HEAT
+  - platform: pid
+    name: "PID COOL"
+    type: COOL
+  - platform: pid
+    name: "PID KP"
+    type: KP
+  - platform: pid
+    name: "PID KI"
+    type: KI
+  - platform: pid
+    name: "PID KD"
+    type: KD
+
+output:
+  # PTC heating element
+  - platform: slow_pwm
+    pin: $GPIO_ptc_heating_element
+    id: pwm_heat_panel
+    period: 5s
+
+  # PID Controller only outputs values from 0-1
+  # the PID output value is scaled down so the heat
+  # coming from the PTC element matches the size of the enclosure.
+  # The scaled down value is passed to the PTC heating element output pin
+  - platform: template
+    id: limited_pwm_heat_panel
+    type: float
+    write_action:
+      - output.set_level:
+          id: pwm_heat_panel
+          level: !lambda 'return state * ${ptc_max_intensity};'
+
+climate:
+  - platform: pid
+    name: "PID Climate Controller"
+    sensor: temperature
+    default_target_temperature: 30°C
+    heat_output: limited_pwm_heat_panel
+    control_parameters:
+      kp: 0.30729
+      ki: 0.00056
+      kd: 42.25282
+
