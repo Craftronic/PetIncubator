@@ -1,11 +1,15 @@
 # Ignore Python virtual environments
 /venv
 
-# Ignore Visual Studio Code settings
-.vscode
-
 # Ignore .esphome directory in any subfolder
 **/.esphome/
 
+# Ignore .esphome directory in any subfolder
+/**/__pycache__/
+
 # Ignore secrets.yaml file in any subfolder
 **/secrets.yaml
+
+.DS_Store
+
+.gitignore

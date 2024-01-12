@@ -1,1 +1,4 @@
-esphome==2023.11.6
+esphome==2023.12.5
+pillow==10.1.0
+cairosvg
+watchdog==3.0.0
