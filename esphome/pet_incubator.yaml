@@ -16,13 +16,13 @@ esphome:
   libraries:
     - m5stack/M5Unified@^0.1.12
   includes:
-    - ../../sounds/headers/click_1.h
-    - ../../sounds/headers/click_2.h
-    - ../../sounds/headers/click_3.h
-    - ../../sounds/headers/click_4.h
-    - ../../sounds/headers/click_5.h
-    - ../../sounds/headers/click_6.h
-    - ../../sounds/headers/swipe1.h
+    - ../sounds/headers/click_1.h
+    - ../sounds/headers/click_2.h
+    - ../sounds/headers/click_3.h
+    - ../sounds/headers/click_4.h
+    - ../sounds/headers/click_5.h
+    - ../sounds/headers/click_6.h
+    - ../sounds/headers/swipe1.h
   on_boot:
       priority: 600
       then: 
@@ -32,6 +32,10 @@ esphome:
         - script.execute: draw_display
         - delay: 1s # needs some delay before m5 speaker is fully initiated and the volume can be set
         - script.execute: m5_speaker_update_volume
+        - delay: 4s
+        - lambda: |-
+            id(init_in_progress) = false;
+        - script.execute: draw_display
 
 external_components:
   - source:
@@ -52,6 +56,23 @@ wifi:
 
 
 script:
+  - id: draw_display
+    then:
+      - lambda: |-
+          auto& lcd = id(m5cores3_lcd);
+
+          if (!id(init_in_progress)) {
+            lcd->show_page(main_page);
+          } else {
+            lcd->show_page(loading);
+          }
+
+          lcd->update();
+  - id: m5_display_set_brightness
+    parameters:
+      value: int
+    then:
+      - lambda: M5.Display.setBrightness(value);
   - id: m5_speaker_update_volume
     then:
       - lambda: M5.Speaker.setVolume(id(speaker_volume)  * 12);
@@ -88,33 +109,16 @@ script:
                   data = std::vector<uint8_t>(); // or some default sound
           }
           return data;
-  - id: draw_display
-    then:
-      - lambda: |-
-          id(m5cores3_lcd).show_page(page1);
-          id(m5cores3_lcd).update();
-  - id: m5_display_set_brightness
-    parameters:
-      value: int
-    then:
-      - lambda: M5.Display.setBrightness(value);
 
 globals:
   - id: speaker_volume
     type: int
     restore_value: no
     initial_value: '5'
-  - id: flick_begin_x
-    type: int
-    initial_value: '-1'
-  - id: prev_x
-    type: int
-    initial_value: '-1'
-  - id: prev_y
-    type: int
-    initial_value: '-1'
-  - id: prev_state
-    type: m5::touch_state_t
+  - id: init_in_progress
+    type: bool
+    restore_value: no
+    initial_value: 'true'
 
 binary_sensor:
   # Button 1
@@ -239,14 +243,44 @@ binary_sensor:
             sound_number: 3
         - script.execute: draw_display
 
-
 image:
+  - file: mdi:cog-outline
+    id: system_settings_icon
+    resize: 20x20
+  - file: mdi:information-outline
+    id: system_info_icon
+    resize: 20x20
+  - file: mdi:thermometer
+    id: thermometer_icon
+    resize: 30x30
+  - file: mdi:water-percent
+    id: water_percent_icon
+    resize: 30x30
+  - file: mdi:lightbulb-outline
+    id: lightbulb_icon
+    resize: 30x30
+  - file: mdi:fan
+    id: fan_icon
+    resize: 30x30
+  - file: mdi:brightness-6
+    id: brightness_icon
+    resize: 30x30
+  - file: mdi:volume-high
+    id: volume_icon
+    resize: 30x30
+  - file: mdi:power
+    id: power_icon
+    resize: 30x30
   - file: mdi:volume-minus
     id: volume_minus
     resize: 80x80
   - file: mdi:volume-plus
     id: volume_plus
     resize: 80x80
+  - file: "../images/splash_screen_320x240.png"
+    id: splash_screen
+    resize: 320x240
+    type: RGB24
 
 font:
   - file: "gfonts://Roboto"
@@ -260,6 +294,42 @@ display:
     update_interval: never
     id: m5cores3_lcd
     pages:
+      - id: loading
+        lambda: it.image(0, 0, id(splash_screen));
+      - id: main_page
+        lambda: |-
+          // Define colors
+          auto red = Color(255, 0, 0);
+          auto green = Color(0, 255, 0);
+          auto blue = Color(0, 0, 255);
+          auto white = Color(255, 255, 255);
+          auto black = Color(0, 0, 0);
+          auto grey = Color(200, 200, 200);
+
+          // Top Bar
+          it.filled_rectangle(0, 0, it.get_width(), 24, grey); // Background for Top Bar
+          it.image(5, 2, id(system_settings_icon)); // System settings icon
+          it.image(it.get_width() - 29, 2, id(system_info_icon)); // System info icon
+
+          // Main Section
+          // Temperature Display
+          it.printf(10, 30, id(roboto), black, "Temp: %.1f°C", 22);
+          it.image(10, 50, id(thermometer_icon));
+          // Humidity Display
+          it.printf(10, 90, id(roboto), black, "Humidity: %.1f%%", 47);
+          it.image(10, 110, id(water_percent_icon));
+          // Lighting Control Shortcut
+          it.image(10, 150, id(lightbulb_icon));
+          // Fan Status Shortcut
+          it.image(10, 190, id(fan_icon));
+
+          // Bottom Bar
+          it.filled_rectangle(0, it.get_height() - 40, it.get_width(), 40, grey); // Background for Bottom Bar
+          // Display Brightness Control
+          it.image(10, it.get_height() - 38, id(brightness_icon));
+          // Volume Control
+          it.image(60, it.get_height() - 38, id(volume_icon));
+
       - id: page1
         lambda: |-
           // Define colors
