@@ -10,19 +10,20 @@ import { brotliCompressSync } from "zlib";
 export default defineConfig({
   base: './',
   build: {
-    assetsDir: '',
+    rollupOptions: {
+      output: {
+        entryFileNames: `[name].js`,
+        chunkFileNames: `[name].js`,
+        assetFileNames: `[name].[ext]`
+      }
+    }
   },
   plugins: [
     react(),
     { ...minifyHTML(), enforce: "pre", apply: "build" },
-    viteSingleFile(),
+    viteSingleFile({ deleteInlinedFiles: false }),
     {
       ...ViteMinifyHtml({ removeComments: true }),
-      enforce: "post",
-      apply: "build",
-    },
-    {
-      ...gzipPlugin({ filter: /\.(js|css|html|svg)$/ }),
       enforce: "post",
       apply: "build",
     },

@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "bash -c './scripts/make_header.sh dist server_index.h web_server && cp dist/server_index.h ../custom_components/web_server/'"
   },
   "dependencies": {
     "react": "^18.2.0",
