@@ -48,9 +48,14 @@ ota:
 logger:
 captive_portal:
 web_server:
+  js_url: https://craftronic.github.io/PetIncubator/index.js
+  css_url: https://craftronic.github.io/PetIncubator/style.css
+  log: false
   port: 80
 
 wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
   ap:
     ssid: "M5Stack CoreS3 Test"
 
