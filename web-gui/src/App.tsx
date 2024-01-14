@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import './App.css'
+import Icon from '@mdi/react';
+import { mdiThermometer, mdiWaterPercent, mdiLightbulbOutline, mdiCog, mdiVolumeHigh } from '@mdi/js';
+// icons here https://pictogrammers.com/library/mdi/
 
 function App() {
   const [count, setCount] = useState(0)
@@ -21,9 +24,21 @@ function App() {
     <div className="absolute bottom-0 left-0 right-0 bg-gray-300 p-4 rounded-b-lg">
       {/* Navbar Mockup Content */}
       <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-700">Home</span>
-        <span className="text-sm text-gray-700">About</span>
-        <span className="text-sm text-gray-700">Contact</span>
+        <span className="text-sm text-gray-700">
+          <Icon path={mdiThermometer} size={1} />
+        </span>
+        <span className="text-sm text-gray-700">
+          <Icon path={mdiWaterPercent} size={1} />
+        </span>
+        <span className="text-sm text-gray-700">
+          <Icon path={mdiLightbulbOutline} size={1} />
+        </span>
+        <span className="text-sm text-gray-700">
+          <Icon path={mdiCog} size={1} />
+        </span>
+        <span className="text-sm text-gray-700">
+          <Icon path={mdiVolumeHigh} size={1} />
+        </span>
       </div>
     </div>
   </div>

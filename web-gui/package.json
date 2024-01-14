@@ -11,6 +11,8 @@
     "deploy": "bash -c './scripts/make_header.sh dist server_index.h web_server && cp dist/server_index.h ../custom_components/web_server/'"
   },
   "dependencies": {
+    "@mdi/js": "^7.4.47",
+    "@mdi/react": "^1.6.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
