@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './App.css'
 import Icon from '@mdi/react';
-import kittensLogo from './assets/device_splash_screen_no_background.png'
 import { mdiThermometer, mdiHeart, mdiWaterPercent, mdiLightbulbOutline, mdiCog, mdiVolumeHigh, mdiGithub } from '@mdi/js';
 
 function App() {
@@ -13,8 +12,8 @@ function App() {
 
   return (
     <>
-      <div className="flex justify-center items-center h-screen overflow-hidden bg-slate-900">
-        <div className="aspect-[4/3] w-96 bg-gray-200 rounded-lg shadow-lg relative md:scale-125 lg:scale-150 z-10"> {/* Container with dynamic scaling */}
+      <div className="flex justify-center items-center h-screen">
+        <div className="aspect-[4/3] w-96 bg-gray-200 rounded-lg shadow-lg relative md:scale-125 lg:scale-150">
           {/* Centering the Content */}
           <div className="flex justify-center items-center h-[calc(100%-4rem)]">
             {/* Mockup Content for the Container */}
@@ -28,7 +27,6 @@ function App() {
 
           {/* Bottom Navbar */}
           <div className="absolute bottom-0 left-0 right-0 bg-gray-300 h-16 rounded-b-lg">
-            {/* Navbar Mockup Content */}
             <div className="flex justify-between items-center h-full">
               <div className="flex-1 flex justify-center items-center cursor-pointer" onClick={() => handleButtonClick('Thermometer')}>
                 <div className="rounded-full p-2 hover:bg-gray-400 hover:bg-opacity-50">
@@ -72,7 +70,6 @@ function App() {
               {/* Heart Icon and ESPHome Text */}
               <div className="flex-1 flex justify-center items-center">
                 <Icon path={mdiHeart} size={1} color="red" className="opacity-50" />
-
                 <a href="https://esphome.io/" className="ml-2">
                   Based on ESPHome
                 </a>

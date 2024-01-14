@@ -28,4 +28,7 @@ export default defineConfig({
       apply: "build",
     },
   ],
+  server: {
+    host: '0.0.0.0'
+  }
 })

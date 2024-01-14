@@ -3,6 +3,28 @@
 @tailwind utilities;
 
 
+
 html, body {
   overflow: hidden;
 }
+
+body {
+  @apply bg-slate-900;
+}
+
+/* Targeting mobile devices */
+@media (max-width: 500px) {
+  body {
+    margin-top: -50px;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+/* Targeting mobile devices in landscape orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+  html, body {
+    overflow: auto;
+  }
+}
+
