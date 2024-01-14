@@ -7,13 +7,13 @@ function App() {
   return (
     <>
 <div className="flex justify-center items-center h-screen overflow-hidden">
-  <div className="aspect-[4/3] w-96 bg-gray-200 rounded-lg shadow-lg relative"> {/* Container with 4:3 aspect ratio */}
+  <div className="aspect-[4/3] w-96 bg-gray-200 rounded-lg shadow-lg relative md:scale-125 lg:scale-150"> {/* Container with dynamic scaling */}
     
     {/* Mockup Content for the Container */}
     <div className="p-4">
       <h2 className="text-lg font-bold text-center">Welcome</h2>
       <p className="text-sm text-gray-600 text-center mt-2">
-        This is a sample container with a 4:3 aspect ratio.
+        This container has a 4:3 aspect ratio and scales 50% larger on desktop.
       </p>
     </div>
 
