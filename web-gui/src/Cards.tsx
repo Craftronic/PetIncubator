@@ -1,5 +1,5 @@
 import React from 'react';
-import { mdiThermometer, mdiHeart, mdiWaterPercent, mdiLightbulbOutline, mdiCog, mdiGithub } from '@mdi/js';
+import { mdiCog } from '@mdi/js';
 import Icon from '@mdi/react';
 
 interface CardProps {
