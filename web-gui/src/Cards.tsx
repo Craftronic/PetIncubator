@@ -44,15 +44,17 @@ const Card: React.FC<CardProps> = ({ value, label, minusClicked, plusClicked, me
 
 export const TemperatureCard = ({ entities }: {entities: entityConfig[]}) => {
   const thermostat = entities.find((x: entityConfig) => x.unique_id === 'climate-pid_thermostat');
+  console.log({thermostat})
 
-  if (!(thermostat && thermostat.target_temperature !== undefined)) {
+  if (!(thermostat && thermostat.target_temperature !== undefined && thermostat.step !== undefined)) {
     return <div>Could not fetch thermostat data</div>
   }
 
   const targetTemp = thermostat.target_temperature;
+  const step = thermostat.step;
 
-  const onPlusClicked = () => restAction(thermostat, `set?target_temperature=${targetTemp * 1 + 1}`)
-  const onMinusClicked = () => restAction(thermostat, `set?target_temperature=${targetTemp * 1 - 1}`)
+  const onPlusClicked = () => restAction(thermostat, `set?target_temperature=${targetTemp * 1 + step * 1}`)
+  const onMinusClicked = () => restAction(thermostat, `set?target_temperature=${targetTemp * 1 - step * 1}`)
 
   return <Card
     label="Temperature"

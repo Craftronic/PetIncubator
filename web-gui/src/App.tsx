@@ -5,9 +5,9 @@ import { mdiThermometer, mdiHeart, mdiWaterPercent, mdiLightbulbOutline, mdiCog,
 import { TemperatureCard, HumidityCard, BrightnessCard, SettingsCard } from './Cards';
 import { getBasePath } from './utils/getBasePath';
 
-
-
-window.source = new EventSource(getBasePath() + "/events");
+if (!window.source) {
+  window.source = new EventSource(getBasePath() + "/events");
+}
 
 function App() {
   const [activeCard, setActiveCard] = useState<Cards>('home');
@@ -29,8 +29,14 @@ function App() {
             has_action: true,
           } as entityConfig;
           return [...prevEntities, entity].sort((a, b) => (a.name < b.name ? -1 : 1));
-        }
+        } else if (idx > -1) {
+          delete data.id;
+          delete data.domain;
+          delete data.unique_id;
+          Object.assign(prevEntities[idx], data);
 
+          return [...prevEntities]; // Return a new array to trigger an update of the DOM
+        }
         return prevEntities;
       });
     };
