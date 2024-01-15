@@ -1,6 +1,8 @@
 import React from 'react';
 import { mdiCog } from '@mdi/js';
 import Icon from '@mdi/react';
+import { getBasePath } from './utils/getBasePath';
+import { restAction } from './utils/restAction';
 
 interface CardProps {
   label: string;
@@ -9,9 +11,10 @@ interface CardProps {
   measuredIn: string;
   plusClicked: () => void;
   minusClicked: () => void;
+  entities: entityConfig[];
 }
 
-const Card: React.FC<CardProps> = ({ value, label, minusClicked, plusClicked, measuredIn, showDecimal }) => {
+const Card: React.FC<CardProps> = ({ value, label, minusClicked, plusClicked, measuredIn, showDecimal, entities }) => {
   const mainValue = showDecimal ? Math.floor(value) : value;
   const decimalValue = showDecimal ? (value % 1).toFixed(1).substring(2) : '';
 
@@ -39,18 +42,31 @@ const Card: React.FC<CardProps> = ({ value, label, minusClicked, plusClicked, me
   );
 };
 
-export const TemperatureCard = () => {
+export const TemperatureCard = ({ entities }: {entities: entityConfig[]}) => {
+  const thermostat = entities.find((x: entityConfig) => x.unique_id === 'climate-pid_thermostat');
+
+  if (!(thermostat && thermostat.target_temperature !== undefined)) {
+    return <div>Could not fetch thermostat data</div>
+  }
+
+  const targetTemp = thermostat.target_temperature;
+
+  const onPlusClicked = () => restAction(thermostat, `set?target_temperature=${targetTemp * 1 + 1}`)
+  const onMinusClicked = () => restAction(thermostat, `set?target_temperature=${targetTemp * 1 - 1}`)
+
   return <Card
     label="Temperature"
-    value={22.4}
-    minusClicked={() => {}}
-    plusClicked={() => {}}
+    value={targetTemp}
+    minusClicked={onMinusClicked}
+    plusClicked={onPlusClicked}
     measuredIn="C"
     showDecimal={true}
+    entities={entities}
   />
+  
 };
 
-export const HomeCard = () => {
+export const HomeCard = ({ entities }: {entities: entityConfig[]}) => {
   return (
     <div>
       Dashboard
@@ -58,7 +74,7 @@ export const HomeCard = () => {
   )
 };
 
-export const HumidityCard = () => {
+export const HumidityCard = ({ entities }: {entities: entityConfig[]}) => {
   return <Card
     label="Humidity"
     value={30}
@@ -66,10 +82,11 @@ export const HumidityCard = () => {
     plusClicked={() => {}}
     measuredIn="%"
     showDecimal={false}
+    entities={entities}
   />
 };
 
-export const BrightnessCard = () => {
+export const BrightnessCard = ({ entities }: {entities: entityConfig[]}) => {
   return <Card
     label="Brightness"
     value={60}
@@ -77,6 +94,7 @@ export const BrightnessCard = () => {
     plusClicked={() => {}}
     measuredIn="%"
     showDecimal={false}
+    entities={entities}
   />
 };
 

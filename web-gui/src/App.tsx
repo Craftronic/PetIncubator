@@ -1,92 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css'
 import Icon from '@mdi/react';
 import { mdiThermometer, mdiHeart, mdiWaterPercent, mdiLightbulbOutline, mdiCog, mdiGithub, mdiHome } from '@mdi/js';
 import { TemperatureCard, HumidityCard, BrightnessCard, SettingsCard } from './Cards';
+import { getBasePath } from './utils/getBasePath';
 
-type Cards = 'home' | 'temperature' | 'humidity' | 'brightness' | 'settings';
 
-interface NavbarItem {
-  id: Cards;
-  icon: string;
-}
-
-interface entityConfig {
-  unique_id: string;
-  domain: string;
-  id: string;
-  state: string;
-  detail: string;
-  value: string;
-  name: string;
-  when: string;
-  icon?: string;
-  option?: string[];
-  assumed_state?: boolean;
-  brightness?: number;
-  target_temperature?: number;
-  target_temperature_low?: number;
-  target_temperature_high?: number;
-  min_temp?: number;
-  max_temp?: number;
-  min_value?: number;
-  max_value?: number;
-  step?: number;
-  min_length?: number;
-  max_length?: number;
-  pattern?: string;
-  current_temperature?: number;
-  modes?: number[];
-  mode?: number;
-  speed_count?: number;
-  speed_level?: number;
-  speed: string;
-  effects?: string[];
-  effect?: string;
-  has_action?: boolean;
-}
-
-function getBasePath() {
-  let str = window.location.pathname;
-  str = 'http://192.168.1.188/';
-  return str.endsWith("/") ? str.slice(0, -1) : str;
-}
 
 window.source = new EventSource(getBasePath() + "/events");
 
-const entities: entityConfig[] = [];
-
-window.source.addEventListener("state", (e: Event) => {
-  const messageEvent = e as MessageEvent;
-  const data = JSON.parse(messageEvent.data);
-  let idx = entities.findIndex((x: entityConfig) => x.unique_id === data.id);
-  if (idx === -1 && data.id) {
-    // Dynamically add discovered..
-    let parts = data.id.split("-");
-    let entity = {
-      ...data,
-      domain: parts[0],
-      unique_id: data.id,
-      id: parts.slice(1).join("-"),
-    } as entityConfig;
-    entity.has_action = true;
-    entities.push(entity);
-    entities.sort((a, b) => (a.name < b.name ? -1 : 1));
-  }
-  console.log(entities);
-});
-
 function App() {
   const [activeCard, setActiveCard] = useState<Cards>('home');
+  const [entities, setEntities] = useState<entityConfig[]>([]);
+
+  useEffect(() => {
+    const handleState = (e: Event) => {
+      const messageEvent = e as MessageEvent;
+      const data = JSON.parse(messageEvent.data);
+      setEntities(prevEntities => {
+        let idx = prevEntities.findIndex((x: entityConfig) => x.unique_id === data.id);
+        if (idx === -1 && data.id) {
+          let parts = data.id.split("-");
+          let entity = {
+            ...data,
+            domain: parts[0],
+            unique_id: data.id,
+            id: parts.slice(1).join("-"),
+            has_action: true,
+          } as entityConfig;
+          return [...prevEntities, entity].sort((a, b) => (a.name < b.name ? -1 : 1));
+        }
+
+        return prevEntities;
+      });
+    };
+
+    window.source.addEventListener("state", handleState);
+  }, []);
+
+  console.log(entities);
 
   const getContent = () => {
     switch (activeCard) {
       case 'temperature':
-        return <TemperatureCard />;
+        return <TemperatureCard entities={entities} />;
       case 'humidity':
-        return <HumidityCard />;
+        return <HumidityCard entities={entities} />;
       case 'brightness':
-        return <BrightnessCard />;
+        return <BrightnessCard entities={entities} />;
       case 'settings':
         return <SettingsCard />;
       // ... other cases
