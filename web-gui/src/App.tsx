@@ -62,7 +62,7 @@ function App() {
                   key={item.id}
                   className="flex-1 flex justify-center items-center cursor-pointer"
                   onClick={() => handleButtonClick(item.id)}>
-                  <div className={`rounded-full p-2 hover:bg-gray-400 hover:bg-opacity-50`}>
+                  <div className={`rounded-full p-2 ${item.id === activeCard && 'bg-gray-400 bg-opacity-50'} `}>
                     <Icon path={item.icon} size={1} />
                   </div>
                 </div>

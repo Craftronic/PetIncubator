@@ -21,7 +21,7 @@ const Card: React.FC<CardProps> = ({ value, label, minusClicked, plusClicked, me
       <div className="flex items-center justify-center mt-2">
         <button 
           onClick={minusClicked} 
-          className="rounded-full bg-gray-300 p-2 h-14 w-14 flex items-center justify-center text-3xl font-extralight hover:bg-opacity-80 hover:bg-gray-400">
+          className="rounded-full bg-gray-300 p-2 h-14 w-14 flex items-center justify-center text-3xl font-extralight active:bg-opacity-80 active:bg-gray-400 md:hover:bg-opacity-80 md:hover:bg-gray-400">
           -
         </button>
         <div className="mx-8 text-7xl font-extralight w-28 text-center">
@@ -30,7 +30,7 @@ const Card: React.FC<CardProps> = ({ value, label, minusClicked, plusClicked, me
         </div>
         <button 
           onClick={plusClicked} 
-          className="rounded-full bg-gray-300 p-2 h-14 w-14 flex items-center justify-center text-3xl font-extralight hover:bg-opacity-80 hover:bg-gray-400">
+          className="rounded-full bg-gray-300 p-2 h-14 w-14 flex items-center justify-center text-3xl font-extralight active:bg-opacity-80 active:bg-gray-400 md:hover:bg-opacity-80 md:hover:bg-gray-400">
           +
         </button>
       </div>
@@ -48,6 +48,14 @@ export const TemperatureCard = () => {
     measuredIn="C"
     showDecimal={true}
   />
+};
+
+export const HomeCard = () => {
+  return (
+    <div>
+      Dashboard
+    </div>
+  )
 };
 
 export const HumidityCard = () => {
