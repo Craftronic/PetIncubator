@@ -1,58 +1,72 @@
 import { useState } from 'react';
 import './App.css'
 import Icon from '@mdi/react';
-import { mdiThermometer, mdiHeart, mdiWaterPercent, mdiLightbulbOutline, mdiCog, mdiVolumeHigh, mdiGithub } from '@mdi/js';
+import { mdiThermometer, mdiHeart, mdiWaterPercent, mdiLightbulbOutline, mdiCog, mdiGithub, mdiHome } from '@mdi/js';
+import { TemperatureCard, HumidityCard, BrightnessCard, SettingsCard } from './Cards';
+
+type Cards = 'home' | 'temperature' | 'humidity' | 'brightness' | 'settings';
+
+interface NavbarItem {
+  id: Cards;
+  icon: string;
+}
 
 function App() {
-  const [activeButton, setActiveButton] = useState<string>('');
+  const [activeCard, setActiveCard] = useState<Cards>('home');
 
-  const handleButtonClick = (buttonName: string) => {
-    setActiveButton(buttonName);
+  const getContent = () => {
+    switch (activeCard) {
+      case 'temperature':
+        return <TemperatureCard />;
+      case 'humidity':
+        return <HumidityCard />;
+      case 'brightness':
+        return <BrightnessCard />;
+      case 'settings':
+        return <SettingsCard />;
+      // ... other cases
+      default:
+        return 'Welcome';
+    }
   };
+
+  const handleButtonClick = (buttonName: Cards) => {
+    setActiveCard(buttonName);
+  };
+
+  const navbarItems: NavbarItem[] = [
+    { id: 'home', icon: mdiHome },
+    { id: 'temperature', icon: mdiThermometer },
+    { id: 'humidity', icon: mdiWaterPercent },
+    { id: 'brightness', icon: mdiLightbulbOutline },
+    { id: 'settings', icon: mdiCog },
+  ];
 
   return (
     <>
       <div className="flex justify-center items-center h-screen">
-        <div className="aspect-[4/3] w-96 bg-gray-200 rounded-lg shadow-lg relative md:scale-125 lg:scale-150">
+        <div className="aspect-[4/3] h-72 bg-gray-200 rounded-lg shadow-lg relative md:scale-125 lg:scale-150">
           {/* Centering the Content */}
           <div className="flex justify-center items-center h-[calc(100%-4rem)]">
-            {/* Mockup Content for the Container */}
-            <div className="p-4 text-center">
-              <h2 className="text-lg font-bold">{activeButton || 'Welcome'}</h2>
-              <p className="text-sm text-gray-600 mt-2">
-                This container has a 4:3 aspect ratio and scales 50% larger on desktop.
-              </p>
+            {/* Dynamic Content */}
+            <div>
+              {getContent()}
             </div>
           </div>
 
           {/* Bottom Navbar */}
           <div className="absolute bottom-0 left-0 right-0 bg-gray-300 h-16 rounded-b-lg">
             <div className="flex justify-between items-center h-full">
-              <div className="flex-1 flex justify-center items-center cursor-pointer" onClick={() => handleButtonClick('Thermometer')}>
-                <div className="rounded-full p-2 hover:bg-gray-400 hover:bg-opacity-50">
-                  <Icon path={mdiThermometer} size={1} />
+              {navbarItems.map(item => (
+                <div 
+                  key={item.id}
+                  className="flex-1 flex justify-center items-center cursor-pointer"
+                  onClick={() => handleButtonClick(item.id)}>
+                  <div className={`rounded-full p-2 hover:bg-gray-400 hover:bg-opacity-50`}>
+                    <Icon path={item.icon} size={1} />
+                  </div>
                 </div>
-              </div>
-              <div className="flex-1 flex justify-center items-center cursor-pointer" onClick={() => handleButtonClick('Humidity')}>
-                <div className="rounded-full p-2 hover:bg-gray-400 hover:bg-opacity-50">
-                  <Icon path={mdiWaterPercent} size={1} />
-                </div>
-              </div>
-              <div className="flex-1 flex justify-center items-center cursor-pointer" onClick={() => handleButtonClick('Light')}>
-                <div className="rounded-full p-2 hover:bg-gray-400 hover:bg-opacity-50">
-                  <Icon path={mdiLightbulbOutline} size={1} />
-                </div>
-              </div>
-              <div className="flex-1 flex justify-center items-center cursor-pointer" onClick={() => handleButtonClick('Volume')}>
-                <div className="rounded-full p-2 hover:bg-gray-400 hover:bg-opacity-50">
-                  <Icon path={mdiVolumeHigh} size={1} />
-                </div>
-              </div>
-              <div className="flex-1 flex justify-center items-center cursor-pointer" onClick={() => handleButtonClick('Settings')}>
-                <div className="rounded-full p-2 hover:bg-gray-400 hover:bg-opacity-50">
-                  <Icon path={mdiCog} size={1} />
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
