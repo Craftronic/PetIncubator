@@ -4,6 +4,13 @@ import App from './App.tsx'
 import './index.css'
 import { Helmet } from 'react-helmet'
 
+// Extend the Window interface
+declare global {
+  interface Window {
+      source: EventSource;
+  }
+}
+
 ReactDOM.createRoot(document.querySelector('esp-app')!).render(
   <React.StrictMode>
     <div>

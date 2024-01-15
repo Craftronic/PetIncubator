@@ -48,8 +48,8 @@ ota:
 logger:
 captive_portal:
 web_server:
-  js_url: https://craftronic.github.io/PetIncubator/index.js
-  css_url: https://craftronic.github.io/PetIncubator/style.css
+#  js_url: https://craftronic.github.io/PetIncubator/index.js
+#  css_url: https://craftronic.github.io/PetIncubator/style.css
   log: false
   port: 80
 
@@ -114,6 +114,59 @@ script:
                   data = std::vector<uint8_t>(); // or some default sound
           }
           return data;
+
+climate:
+  - platform: pid
+    id: pid_climate
+    name: "PID Thermostat"
+    sensor: temperature
+    default_target_temperature: 30°C
+    heat_output: pwm_heat_panel
+    control_parameters:
+      kp: 0.44842
+      ki: 0.00068
+      kd: 74.21323
+      output_averaging_samples: 10      # smooth the output over 5 samples
+      derivative_averaging_samples: 15  # smooth the derivative value over 10 samples
+    visual:
+      min_temperature: 24
+      max_temperature: 33
+      temperature_step:
+        target_temperature: 0.5
+        current_temperature: 0.1
+
+i2c:
+  sda: 2
+  scl: 1
+  scan: true
+  id: i2c_external
+
+sensor:
+  - platform: sht3xd
+    address: 0x44
+    update_interval: 5s
+    temperature:
+      id: temperature
+      name: "Temperature"
+    humidity:
+      id: humidity
+      name: "Humidity"
+
+output:
+  - platform: ledc
+    pin: GPIO6
+    frequency: 25000Hz
+    id: fan_pwm
+  - platform: slow_pwm
+    pin: GPIO7
+    id: pwm_heat_panel
+    period: 1s
+
+fan:
+  - platform: speed
+    output: fan_pwm
+    name: "PWM Fan"
+    id: _fan
 
 globals:
   - id: speaker_volume
