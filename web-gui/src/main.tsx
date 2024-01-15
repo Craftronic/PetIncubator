@@ -2,11 +2,21 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import initReactFastclick from 'react-fastclick'
-initReactFastclick();
+import { Helmet } from 'react-helmet'
 
 ReactDOM.createRoot(document.querySelector('esp-app')!).render(
   <React.StrictMode>
-    <App />
+    <div>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>My Title</title>
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <title>PetIncubator</title>
+        <meta name="description" content="A PetIncubator built with ESPHome" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Helmet>
+      {/* Load the app */}
+      <App />
+    </div>
   </React.StrictMode>,
 )
